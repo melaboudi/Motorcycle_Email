@@ -133,20 +133,48 @@ void setup() {
 }
 
 void loop() {
-  Serial.setTimeout(1500);
-  sendAtCom("AT+EMAILCID=1");
-  sendAtCom("AT+EMAILTO=60");
-  sendAtCom("AT+SMTPSRV=mail.gpsflagup.com,587");
-  sendAtCom("AT+SMTPAUTH=1,contact@gpsflagup.com,MerryBe123!!!");
-  sendAtCom("AT+SMTPFROM=contact@gpsflagup.com,moaad");
-  sendAtCom("AT+SMTPRCPT=0,0,melaboudi@gmail.com,miaad");
-  sendAtCom("AT+SMTPSUB=TTest");
-  sendAtCom("AT+SMTPBODY=6");
-  if(Serial.available()){Serial.readString();}
-  sendAtCom("SIM808");
   Serial.setTimeout(20000);
-  sendAtCom("AT+SMTPSEND");
+  Serial.print("AT+EMAILCID=1");
+  char buffer[5];
+  Serial.readBytesUntil('O',buffer,3);
+  
+  Serial.print("AT+EMAILTO=60");
+  char buffer1[5];
+  Serial.readBytesUntil('O',buffer1,3);
+
+  Serial.print("AT+SMTPSRV=\"mail.gpsflagup.com\",587");
+  char buffer2[5];
+  Serial.readBytesUntil('O',buffer2,3);
+
+  Serial.print("AT+SMTPAUTH=1,\"contact@gpsflagup.com\",\"MerryBe123!!!\"");
+  char buffer3[5];
+  Serial.readBytesUntil('O',buffer3,3);
+  
+  Serial.print("AT+SMTPFROM=\"contact@gpsflagup.com\",\"moaad\"");
+  char buffer4[5];
+  Serial.readBytesUntil('O',buffer4,3);
+
+  Serial.print("AT+SMTPRCPT=0,0,\"melaboudi@gmail.com\",\"miaad\"");
+  char buffer5[5];
+  Serial.readBytesUntil('O',buffer5,3);
+
+  Serial.print("AT+SMTPSUB=\"TTest\"");
+  // char buffer6[5];
+  // Serial.readBytesUntil('O',buffer6,3);
+
+  Serial.print("AT+SMTPBODY=6");
+  Serial.readStringUntil("DOWNLOAD");
+
+  Serial.print("SIM808");
+  char buffer8[5];
+  Serial.readBytesUntil('O',buffer8,3);
+
+  Serial.print("AT+SMTPSEND");
+  char buffer9[16];
+  Serial.readBytesUntil('1',buffer9,12);
+
   powerDown();
+
 }
 void IntRoutine(void) {
    wakeUpCounter = 4;
