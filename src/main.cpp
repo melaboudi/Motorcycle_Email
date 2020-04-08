@@ -129,47 +129,25 @@ void setup() {
     delay(500);
   }
   gprsOn();
-  attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(intPin), IntRoutine, RISING);
+  // attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(intPin), IntRoutine, RISING);
 }
 
 void loop() {
-  enablePinChangeInterrupt(digitalPinToPinChangeInterrupt(intPin));
-  if(wakeUp){httpPostWakeUp();wakeUp=false;}
-  if (!digitalRead(8)) {
-    if (getGnsStat() == 1) {
-      if (getGpsData()) {
-        if ((t2 - t1) >= ti) {insertMem();t1 = t2;}
-        if ((t1 - t3) >= te) {
-          if (getCounter() <= 10) {if(!httpPostAll()){resetSS();}} else {if(!httpPostLimited()){resetSS();}}
-        }
-      }else {resetSS();delay(10000);} 
-  } else {turnOnGns(); delay(1000);}
-  } else {
-      if(getCounter()==0){httpPost1P();}else {if(!httpPostAll()){resetSS();}}
-    httpPostSleeping();powerDown(); 
-    attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(intPin), IntRoutine, RISING);
-    Serial.flush();
-    while (wakeUpCounter < 3) {
-    Wire.beginTransmission(8);
-    Wire.write('f');
-    Wire.endTransmission();
-      LowPower.idle(SLEEP_8S, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_ON, TWI_OFF);
-      wakeUpCounter++;
-    }
-    if (wakeUpCounter != 5) {
-    powerUp();turnOnGns(); gprsOn(); 
-    wakeUpCounter = 0;httpPostWakeUp();
-    httpPost1P();
-    } 
-  else {
-    Wire.beginTransmission(8);
-    Wire.write('n');
-    Wire.endTransmission();
-    powerUp();turnOnGns();gprsOn();
-    wakeUpCounter = 0;httpPostWakeUp();
-    httpPost1P();
-  }
-  }
+  Serial.setTimeout(1500);
+  sendAtCom("AT+EMAILCID=1");
+  sendAtCom("AT+EMAILTO=60");
+  sendAtCom("AT+SMTPSRV=\"mail.gpsflagup.com\",587");
+  sendAtCom("AT+SMTPAUTH=1,\"contact@gpsflagup.com\",\"MerryBe123!!!\"");
+  sendAtCom("AT+SMTPFROM=\"contact@gpsflagup.com\",\"moaad\"");
+  sendAtCom("AT+SMTPRCPT=0,0,\"contact@gpsflagup.com\",\"miaad\"");
+  sendAtCom("AT+SMTPSUB=\"TTest\"");
+  sendAtCom("AT+SMTPBODY=6");
+  if(Serial.available()){Serial.readString();}
+  sendAtCom("SIM808");
+  Serial.setTimeout(20000);
+  sendAtCom("AT+SMTPSEND");
+  powerDown();
+
 }
 void IntRoutine(void) {
    wakeUpCounter = 4;
