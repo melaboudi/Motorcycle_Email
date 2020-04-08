@@ -136,18 +136,17 @@ void loop() {
   Serial.setTimeout(1500);
   sendAtCom("AT+EMAILCID=1");
   sendAtCom("AT+EMAILTO=60");
-  sendAtCom("AT+SMTPSRV=\"mail.gpsflagup.com\",587");
-  sendAtCom("AT+SMTPAUTH=1,\"contact@gpsflagup.com\",\"MerryBe123!!!\"");
-  sendAtCom("AT+SMTPFROM=\"contact@gpsflagup.com\",\"moaad\"");
-  sendAtCom("AT+SMTPRCPT=0,0,\"contact@gpsflagup.com\",\"miaad\"");
-  sendAtCom("AT+SMTPSUB=\"TTest\"");
+  sendAtCom("AT+SMTPSRV=mail.gpsflagup.com,587");
+  sendAtCom("AT+SMTPAUTH=1,contact@gpsflagup.com,MerryBe123!!!");
+  sendAtCom("AT+SMTPFROM=contact@gpsflagup.com,moaad");
+  sendAtCom("AT+SMTPRCPT=0,0,melaboudi@gmail.com,miaad");
+  sendAtCom("AT+SMTPSUB=TTest");
   sendAtCom("AT+SMTPBODY=6");
   if(Serial.available()){Serial.readString();}
   sendAtCom("SIM808");
   Serial.setTimeout(20000);
   sendAtCom("AT+SMTPSEND");
   powerDown();
-
 }
 void IntRoutine(void) {
    wakeUpCounter = 4;
