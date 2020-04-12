@@ -133,47 +133,75 @@ void setup() {
 }
 
 void loop() {
-  Serial.setTimeout(20000);
-  Serial.print("AT+EMAILCID=1");
-  char buffer[5];
-  Serial.readBytesUntil('O',buffer,3);
-  
-  Serial.print("AT+EMAILTO=60");
-  char buffer1[5];
-  Serial.readBytesUntil('O',buffer1,3);
-
-  Serial.print("AT+SMTPSRV=\"mail.gpsflagup.com\",587");
-  char buffer2[5];
-  Serial.readBytesUntil('O',buffer2,3);
-
-  Serial.print("AT+SMTPAUTH=1,\"contact@gpsflagup.com\",\"MerryBe123!!!\"");
-  char buffer3[5];
-  Serial.readBytesUntil('O',buffer3,3);
-  
-  Serial.print("AT+SMTPFROM=\"contact@gpsflagup.com\",\"moaad\"");
-  char buffer4[5];
-  Serial.readBytesUntil('O',buffer4,3);
-
-  Serial.print("AT+SMTPRCPT=0,0,\"melaboudi@gmail.com\",\"miaad\"");
-  char buffer5[5];
-  Serial.readBytesUntil('O',buffer5,3);
-
-  Serial.print("AT+SMTPSUB=\"TTest\"");
-  // char buffer6[5];
-  // Serial.readBytesUntil('O',buffer6,3);
-
-  Serial.print("AT+SMTPBODY=6");
-  Serial.readStringUntil("DOWNLOAD");
-
+  clearMemoryDiff(0,300);
+  if(sendAtFram(2000, 31739, 13, "OK", "ERROR", 1)){writeDataFram(" 1 ");}
+  if(sendAtFram(2000, 31752, 13, "OK", "ERROR", 1)){writeDataFram(" 2 ");}
+  if(sendAtFram(2000, 31765, 35, "OK", "ERROR", 1)){writeDataFram(" 3 ");}
+  if(sendAtFram(2000, 31818, 53, "OK", "ERROR", 1)){writeDataFram(" 4 ");}
+  if(sendAtFram(2000, 31862, 43, "OK", "ERROR", 1)){writeDataFram(" 5 ");}
+  if(sendAtFram(2000, 31907, 45, "OK", "ERROR", 1)){writeDataFram(" 6 ");}
+  if(sendAtFram(2000, 31952, 18, "OK", "ERROR", 1)){writeDataFram(" 7 ");}
+  Serial.println("AT+SMTPBODY=6");
+  Serial.setTimeout(10000);
+  if(Serial.findUntil("DOWNLOAD","ERROR")){writeDataFram(" 8 ");}
   Serial.print("SIM808");
-  char buffer8[5];
-  Serial.readBytesUntil('O',buffer8,3);
+  if(Serial.findUntil("OK", "ERROR")){writeDataFram(" 9 ");}
+  // sendAtFram(2000, 31952, 18, "OK", "ERROR", 1);
+  if(sendAtFram(2000, 31970, 11, "OK", "ERROR", 1)){writeDataFram(" 10 ");}
 
-  Serial.print("AT+SMTPSEND");
-  char buffer9[16];
-  Serial.readBytesUntil('1',buffer9,12);
+  // Serial.setTimeout(20000);
+  // Serial.print("AT+EMAILCID=1");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("EMAILCID: ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+EMAILTO=30");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("EMAIL TO: ");
+  // writeDataFram(Buffer.c_str());
 
+  // Serial.print("AT+SMTPSRV=\"mail.gpsflagup.com\",587");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("SMTPSRV ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+SMTPAUTH=1,\"contact@gpsflagup.com\",\"MerryBe123!!!\"");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("SMTPAUTH ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+SMTPFROM=\"contact@gpsflagup.com\",\"moaad\"");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("SMTPFROM ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+SMTPRCPT=0,0,\"melaboudi@gmail.com\",\"miaad\"");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("SMTPRCPT ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+SMTPSUB=\"TTest\"");
+  // // char buffer6[5];
+  // // Serial.readBytesUntil('O',buffer6,3);
+  // writeDataFram("SMTPSUB ");
+  
+  // Serial.print("AT+SMTPBODY=6");
+  // Buffer=Serial.readStringUntil("D");
+  // writeDataFram("SMTPBODY ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("SIM808");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("BODY ");
+  // writeDataFram(Buffer.c_str());
+  
+  // Serial.print("AT+SMTPSEND");
+  // Buffer=Serial.readStringUntil("K");
+  // writeDataFram("SMTPSEND ");
+  // writeDataFram(Buffer.c_str());
+  
   powerDown();
+  while(1);
 
 }
 void IntRoutine(void) {
@@ -717,7 +745,7 @@ void clearMemory(int size) {
 }
 void clearMemoryDiff(int size, int size1) {
   for (uint16_t a = size; a < size1; a++) {
-    fram.write8(a, "0");
+    fram.write8(a, 0);
   }
 }
 void clearMemoryDebug(unsigned long size) {
